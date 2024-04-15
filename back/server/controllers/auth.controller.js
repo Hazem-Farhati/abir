@@ -244,3 +244,20 @@ export const signout = (req, res, next) => {
     next(error);
   }
 };
+/**
+ * @desc Get information about the current user
+ * @params GET /api/auth/current-user
+ * @access PRIVATE (user logged in)
+ **/
+export const usercurrent = async (req, res, next) => {
+  try {
+    // Retrieve user information from the request object, assuming it's populated by the authentication middleware
+    const currentUser = req.user;
+    
+    // Return user information in the response
+    return res.status(200).json({ status: true, data: currentUser });
+  } catch (error) {
+    // If an error occurs, pass it to the error handling middleware
+    next(error);
+  }
+};
