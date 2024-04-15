@@ -249,11 +249,24 @@ export const signout = (req, res, next) => {
  * @params GET /api/auth/current-user
  * @access PRIVATE (user logged in)
  **/
+/**
+ * @desc Get information about the current user
+ * @params GET /api/auth/current-user
+ * @access PRIVATE (user logged in)
+ **/
+/**
+ * @desc Get information about the current user
+ * @params GET /api/auth/current-user
+ * @access PRIVATE (user logged in)
+ **/
 export const usercurrent = async (req, res, next) => {
   try {
-    // Retrieve user information from the request object, assuming it's populated by the authentication middleware
-    const currentUser = req.user;
-    
+    // Retrieve current user ID from the request object
+    const { id } = req.user;
+
+    // Fetch user details from the database based on the user ID
+    const currentUser = await User.findById(id);
+
     // Return user information in the response
     return res.status(200).json({ status: true, data: currentUser });
   } catch (error) {
@@ -261,3 +274,4 @@ export const usercurrent = async (req, res, next) => {
     next(error);
   }
 };
+

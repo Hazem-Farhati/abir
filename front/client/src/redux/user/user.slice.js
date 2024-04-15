@@ -171,18 +171,25 @@ export const deleteUser = createAsyncThunk(
 /*==== logOut =====*/
 export const logOut = createAsyncThunk(
   "auth/logOut",
-  async (data, { rejectWithValue, getState }) => {
+  async (_, { rejectWithValue, getState }) => {
     try {
-      console.log("data", data);
-      const response = await axios.post(`/auth/signout`, data, {
-        headers: { authorization: getState().user.token },
+      // Remove the token from localStorage
+      localStorage.removeItem("token");
+
+      // Send the logout request
+      const response = await axios.post(`/auth/signout`, null, {
+        headers: { Authorization: getState().user.token }, // Include the token in the Authorization header
       });
+
+      // Display a success message
       toast.success(response.data.message);
 
       return response;
     } catch (error) {
-      toast.error(error.response.data.message);
+      // Display an error message
+      toast.error(error.response?.data?.message || error.message);
 
+      // Return the error message as the payload
       return rejectWithValue(
         error.response && error.response.data.message
           ? error.response.data.message
@@ -191,6 +198,7 @@ export const logOut = createAsyncThunk(
     }
   }
 );
+
 /*====// logOut //=====*/
 
 /*==== getUser =====*/
@@ -243,22 +251,35 @@ export const updateUserDashbord = createAsyncThunk(
     }
   }
 );
-
-export const userCurrent = createAsyncThunk("user/current", async () => {
-  try {
-    let result = await axios.get(
-      "http://localhost:3001/api/auth/current-user",
-      {
+export const userCurrent = createAsyncThunk(
+  "user/current",
+  async (_, { rejectWithValue }) => {
+    try {
+      // Retrieve the token from localStorage
+      const token = localStorage.getItem("token");
+      // Now, you can include the token in the Authorization header of your requests
+      const response = await axios.get("http://localhost:3001/api/auth/current-user", {
         headers: {
-          Authorization: localStorage.getItem("token"),
+          Authorization: token ? token : '', // Include the token in the Authorization header
         },
-      }
-    );
-    return result.data.user;
-  } catch (error) {
-    console.log(error);
+      });
+
+      // Return the user data from the response
+      return response.data.data;
+    } catch (error) {
+      // Log the error for debugging
+      console.error("Error fetching current user:", error);
+
+      // Return the error message as the payload
+      return rejectWithValue(error.response?.data?.message || "Error fetching current user");
+    }
   }
-});
+);
+
+
+
+
+
 const initialState = {
   user: null,
   users: null,
@@ -315,7 +336,7 @@ const userSlice = createSlice({
       state.token = action.payload.token;
       state.userId = action.payload.id;
       state.loading = false;
-
+      localStorage.setItem("token", action.payload.token);
       state.isAuth = true;
       state.errors = null;
     });
@@ -391,17 +412,18 @@ const userSlice = createSlice({
 
     //end get all  user
     builder
-      // current user cases
-      .addCase(userCurrent.pending, (state) => {
-        state.status = "loading";
-      })
-      .addCase(userCurrent.fulfilled, (state, action) => {
-        state.status = "success";
-        state.user = action.payload?.user;
-      })
-      .addCase(userCurrent.rejected, (state) => {
-        state.status = "fail";
-      });
+    .addCase(userCurrent.pending, (state) => {
+      state.loading = true;
+      state.error = null;
+    })
+    .addCase(userCurrent.fulfilled, (state, action) => {
+      state.loading = false;
+      state.user = action.payload;
+    })
+    .addCase(userCurrent.rejected, (state, action) => {
+      state.loading = false;
+      state.error = action.payload;
+    });
   },
 });
 export const { signOut } = userSlice.actions;

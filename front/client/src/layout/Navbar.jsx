@@ -21,6 +21,8 @@ console.log(userInfo,"info")
   // useEffect(() => {
   //   dispatch(getUser({ id }));
   // }, [id]);
+  const user = useSelector((state) => state?.user?.user);
+console.log(user?.role,"roleee")
   return (
     <header>
       <nav className="grid grid-cols-2 p-4 border-b font-semibold h-18" ref={navRef}>
@@ -31,36 +33,67 @@ console.log(userInfo,"info")
           {isAuth ? (
             <>
               <div>
-                {userInfo.role == "ADMIN" &&
+                {user?.role == "ADMIN" &&
                  <Link to={`/users-dashbord`}>
                  <FaProjectDiagram  />
                  <span className="ml-2">Users</span>
                </Link>
                 }
-             
-                <Link to={`/project`}>
-                  <FaProjectDiagram  />
-                  <span className="ml-2">Projects</span>
-                </Link>
+             {user?.role == "special" || user?.role == "ADMIN"  ? 
+              <Link to={`/project`}>
+              <FaProjectDiagram  />
+              <span className="ml-2">Projects</span>
+            </Link> : 
+              <Link to={`/unauthorized`}>
+              <FaProjectDiagram  />
+              <span className="ml-2">Projects</span>
+            </Link> 
+            }
+              
               </div>
               <div>
+
+             {user?.role == "special" || user?.role == "ADMIN"  ? 
                 <Link to={`/edit`}>
-                  <FaEdit />
-                  <span className="ml-2">Edit</span>
-                </Link>
+                <FaEdit />
+                <span className="ml-2">Edit</span>
+              </Link> 
+              :
+              <Link to={`/unauthorized`}>
+              <FaEdit />
+              <span className="ml-2">Edit</span>
+            </Link>
+}
+
+             
               </div>
-              <div>
-                <Link to={`/view`}>
-                  <FaEye />
-                  <span className="ml-2">View</span>
-                </Link>
-              </div>
-              <div>
-                <Link to={`/jira`}>
+              {user?.role == "special" || user?.role == "ADMIN"  ? 
+                     <div>
+                     <Link to={`/view`}>
+                       <FaEye />
+                       <span className="ml-2">View</span>
+                     </Link>
+                   </div> :
+                    <div>
+                    <Link to={`/unauthorized`}>
+                      <FaEye />
+                      <span className="ml-2">View</span>
+                    </Link>
+                  </div>
+}
+          {user?.role == "special" || user?.role == "ADMIN"  ? 
+   <div>
+   <Link to={`/jira`}>
+   <FaProjectDiagram  />
+     <span className="ml-2">Jira</span>
+   </Link>
+ </div> :    <div>
+                <Link to={`/unauthorized`}>
                 <FaProjectDiagram  />
                   <span className="ml-2">Jira</span>
                 </Link>
-              </div>
+              </div> }
+           
               <div>
                 <Link to={`/report`}>
                   <FaFileAlt />
