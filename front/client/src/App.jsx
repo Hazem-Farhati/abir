@@ -6,32 +6,33 @@ import Navbar from "./layout/Navbar";
 import Announcement from "./layout/Announcement";
 import Footer from "./layout/Footer";
 import { useLocation } from "react-router-dom";
-import { getUser, getusers } from "./redux/user/user.slice";
+import { getUser, getusers, userCurrent } from "./redux/user/user.slice";
 import { useDispatch, useSelector } from "react-redux";
 const App = () => {
   const isAuth = localStorage.getItem("persist:user");
   // const isUserSignedIn = !!localStorage.getItem('token') // to protect the route of the user account after he log in
-  const dispatch=useDispatch();
+  const dispatch = useDispatch();
   const locationRouter = useLocation();
-  const [reload, setReload] = useState(false)
+  const [reload, setReload] = useState(false);
   // const { userInfo, userId } = useSelector((state) => state.user);
+  const user = useSelector((state) => state?.user?.user);
+  const users = useSelector((state) => state?.user?.users);
+  console.log(users, "all");
 
-    //useEffect & dispatch to get data
-    useEffect(() => {
-      if (isAuth) {
-        dispatch(getusers());
-        // dispatch(userCurrent());
+  //useEffect & dispatch to get data
+  useEffect(() => {
+    if (isAuth) {
+      dispatch(getusers());
+      dispatch(userCurrent());
+    }
+  }, [dispatch, reload]);
 
-      }
-    }, [dispatch,reload,]);
-
-    const user = useSelector((state) => state?.user?.user);
-  console.log(user,"usercurrent")
+  console.log(user, "usercurrent");
   return (
     <div className="App">
       {locationRouter.pathname === "/" && <Announcement />}
       <Navbar />
-      <Routers setReload={setReload} reload={reload}/>
+      <Routers setReload={setReload} reload={reload} />
 
       {locationRouter.pathname === "/" && <Footer />}
 

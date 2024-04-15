@@ -3,7 +3,6 @@ import { toast } from "react-toastify";
 import axios from "axios";
 import { jwtDecode } from "jwt-decode";
 
-
 /*==== registerUser =====*/
 export const registerUser = createAsyncThunk(
   "user/register",
@@ -38,14 +37,15 @@ export const loginUser = createAsyncThunk(
       // Check if the account is validated
       if (decodedToken.isValidate) {
         // If the account is not validated, return a rejected promise with an error message
-        const errorMessage = "Account is not validated. Please validate your account before logging in.";
+        const errorMessage =
+          "Account is not validated. Please validate your account before logging in.";
         toast.error(errorMessage);
         return rejectWithValue(errorMessage);
       }
-      
+
       const token = response.data.data.token;
       const responseChane = { ...decodedToken, token };
-      
+
       toast.success(`Sign-in successful`);
       return responseChane;
     } catch (error) {
@@ -59,8 +59,6 @@ export const loginUser = createAsyncThunk(
     }
   }
 );
-
-
 
 /*====// loginUser //=====*/
 /*==== forgot-password =====*/
@@ -118,8 +116,15 @@ export const createNewPassword = createAsyncThunk(
 export const updateUser = createAsyncThunk(
   "user/updateUser",
   async (data, { rejectWithValue, dispatch, getState }) => {
-    const { username, email, password, confirm_password, id,profilePicture  } = data;
-    const sendData = { username, email, password, confirm_password,profilePicture };
+    const { username, email, password, confirm_password, id, profilePicture } =
+      data;
+    const sendData = {
+      username,
+      email,
+      password,
+      confirm_password,
+      profilePicture,
+    };
     try {
       const response = await axios.put(`/user/${data.id}`, sendData, {
         headers: { authorization: getState().user.token },
@@ -211,7 +216,6 @@ export const getUser = createAsyncThunk(
 );
 /*====// getUser //=====*/
 
-
 //get all users
 export const getusers = createAsyncThunk("user/getall", async () => {
   try {
@@ -240,20 +244,21 @@ export const updateUserDashbord = createAsyncThunk(
   }
 );
 
-//current user
-// export const userCurrent = createAsyncThunk("user/current", async () => {
-//   try {
-//     let result = await axios.get("http://localhost:3001/current", {
-//       headers: {
-//         authorization: localStorage.getItem("persist:user"),
-//       },
-//     });
-//     // console.log(result.data)
-//     return result.data;
-//   } catch (error) {
-//     console.log(error);
-//   }
-// });
+export const userCurrent = createAsyncThunk("user/current", async () => {
+  try {
+    let result = await axios.get(
+      "http://localhost:3001/api/auth/current-user",
+      {
+        headers: {
+          Authorization: localStorage.getItem("token"),
+        },
+      }
+    );
+    return result.data.user;
+  } catch (error) {
+    console.log(error);
+  }
+});
 const initialState = {
   user: null,
   users: null,
@@ -373,30 +378,30 @@ const userSlice = createSlice({
     //get all  user
 
     builder
-    .addCase(getusers.pending, (state) => {
-      state.status = "loading";
-    })
-    .addCase(getusers.fulfilled, (state, action) => {
-      state.status = "success";
-      state.users = action.payload;
-    })
-    .addCase(getusers.rejected, (state) => {
-      state.status = "fail";
-    });
+      .addCase(getusers.pending, (state) => {
+        state.status = "loading";
+      })
+      .addCase(getusers.fulfilled, (state, action) => {
+        state.status = "success";
+        state.users = action.payload;
+      })
+      .addCase(getusers.rejected, (state) => {
+        state.status = "fail";
+      });
 
-    // //end get all  user
-    // builder
-    // // current user cases
-    // .addCase(userCurrent.pending, (state) => {
-    //   state.status = "loading";
-    // })
-    // .addCase(userCurrent.fulfilled, (state, action) => {
-    //   state.status = "success";
-    //   state.user = action.payload?.user;
-    // })
-    // .addCase(userCurrent.rejected, (state) => {
-    //   state.status = "fail";
-    // });
+    //end get all  user
+    builder
+      // current user cases
+      .addCase(userCurrent.pending, (state) => {
+        state.status = "loading";
+      })
+      .addCase(userCurrent.fulfilled, (state, action) => {
+        state.status = "success";
+        state.user = action.payload?.user;
+      })
+      .addCase(userCurrent.rejected, (state) => {
+        state.status = "fail";
+      });
   },
 });
 export const { signOut } = userSlice.actions;
