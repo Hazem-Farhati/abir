@@ -66,7 +66,11 @@ const ProfileContainer = ({ userInfo, id }) => {
 
   const handleSignOut = async () => {
     console.log("logOut");
-    dispatch(logOut(id));
+    setTimeout(() => {
+      dispatch(logOut(id));
+
+    }, 1500);
+    navigate('/signin')
   };
 
   /*===== formik and yup =====*/

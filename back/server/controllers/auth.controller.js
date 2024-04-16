@@ -10,6 +10,8 @@ import {
   valdiateResetPassword,
 } from "../validations/users.schemas.js";
 import { restePassword } from "../utils/html.template.js";
+import { registerMessage } from "../utils/regsiter.message.js";
+
 import sendMail from "../services/send.email.js";
 /**
  * @desc create new user
@@ -34,9 +36,14 @@ export const signup = async (req, res, next) => {
   });
   try {
     await newUser.save();
+    const subject = "Registred account";
+      const html = registerMessage();
+      // Sending email to the user's email address
+      await sendMail("gharsalliabir5@gmail.com", subject, html);
     return res
       .status(201)
       .json({ message: "User created successfully", status: true });
+      
   } catch (error) {
     next(error);
   }

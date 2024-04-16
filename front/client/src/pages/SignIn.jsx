@@ -8,15 +8,22 @@ import { useDispatch, useSelector } from "react-redux";
 import OAuth from "../components/OAuth";
 import { loginSchema } from "../validations/user.schema.js";
 
-const SignIn = () => {
+const SignIn = ({reload,setReload}) => {
   // get all users
   const users = useSelector((state) => state.user?.users);
   const navigate = useNavigate();
   const dispatch = useDispatch();
+  const user = useSelector((state) => state.user?.user);
 
   const { isAuth, loading } = useSelector((state) => state.user);
   const login = () => {
     dispatch(loginUser(values));
+    setTimeout(() => {
+      navigate(`/profile/${user?._id}`)
+      setReload(!reload)
+    }, 2000);
+  
+    
     console.log("values", values);
   };
   /*===== formik and yup =====*/
@@ -30,11 +37,11 @@ const SignIn = () => {
       onSubmit: login,
     });
   /*=====// formik and yup //=====*/
-  useEffect(() => {
-    {
-      isAuth && navigate("/account");
-    }
-  }, [isAuth]);
+  // useEffect(() => {
+  //   {
+  //     isAuth && navigate("/account");
+  //   }
+  // }, [isAuth]);
   const error = false;
 
   // -------------------- get writen email ---------------------

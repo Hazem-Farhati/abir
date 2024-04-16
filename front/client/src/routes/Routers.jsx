@@ -35,7 +35,7 @@ const Routers = ({ setReload, reload }) => {
   return (
     <Routes>
      <Route exact path="/" element={<Home />} />
-        <Route path="/signin" element={<SignIn />} />
+        <Route path="/signin" element={<SignIn reload={reload} setReload={setReload} />} />
         <Route path="/signup" element={<SignUp />} />
 
         <Route path="/forgot-password" element={<Forget />} />
