@@ -20,22 +20,7 @@ const UsersDashbord = ({setReload, reload}) => {
         setReload(!reload)
     };
     
-    // const handleCheckboxChange = (e, userId) => {
-    //     const { checked } = e.target;
-    //     setValidations(prevValidations => ({
-    //         ...prevValidations,
-    //         [userId]: checked
-    //     }));
-    //     dispatch(updateUserDashbord({ id: userId, user: { isValidate: checked } }));
-    //     setReload(!reload)
-    // };
-
-    // const handleSubmitAll = () => {
-    //     users.forEach(user => {
-    //         dispatch(updateUserDashbord({ id: user._id, newUser: { role: roles[user._id] }, user: { isValidate: validations[user._id] } }));
-    //     });
-    // };
-
+   
     const users = useSelector((state) => state.user?.users);
 
     return (

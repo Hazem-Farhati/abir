@@ -171,25 +171,19 @@ export const deleteUser = createAsyncThunk(
 /*==== logOut =====*/
 export const logOut = createAsyncThunk(
   "auth/logOut",
-  async (_, { rejectWithValue, getState }) => {
+  async (data, { rejectWithValue, getState }) => {
     try {
-      // Remove the token from localStorage
       localStorage.removeItem("token");
-
-      // Send the logout request
-      const response = await axios.post(`/auth/signout`, null, {
-        headers: { Authorization: getState().user.token }, // Include the token in the Authorization header
+      console.log("data", data);
+      const response = await axios.post(`/auth/signout`, data, {
+        headers: { authorization: getState().user.token },
       });
-
-      // Display a success message
       toast.success(response.data.message);
 
       return response;
     } catch (error) {
-      // Display an error message
-      toast.error(error.response?.data?.message || error.message);
+      toast.error(error.response.data.message);
 
-      // Return the error message as the payload
       return rejectWithValue(
         error.response && error.response.data.message
           ? error.response.data.message
@@ -303,6 +297,7 @@ const userSlice = createSlice({
       state.loading = false;
       state.errors = false;
     },
+    
   },
 
   extraReducers: (builder) => {

@@ -1,6 +1,6 @@
 import React from "react";
 import { HiOutlineArrowLeft } from "react-icons/hi";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
 import { useRef, useState, useEffect } from "react";
 import { useFormik } from "formik";
@@ -17,6 +17,8 @@ import { logOut, updateUser } from "../../redux/user/user.slice.js";
 import DeleteUserModal from "../../components/DeleteUserModal.jsx";
 
 const ProfileContainer = ({ userInfo, id }) => {
+const isAuth = localStorage.getItem("persist:user");
+
   const { userInfo: reduxUserInfo, loading: reduxLoading } = useSelector(
     (state) => state.user
   );
@@ -66,11 +68,11 @@ const ProfileContainer = ({ userInfo, id }) => {
 
   const handleSignOut = async () => {
     console.log("logOut");
-    setTimeout(() => {
       dispatch(logOut(id));
-
-    }, 1500);
-    navigate('/signin')
+      setTimeout(() => {
+      navigate('/signin')
+      }, 100);
+   
   };
 
   /*===== formik and yup =====*/
@@ -89,6 +91,8 @@ const ProfileContainer = ({ userInfo, id }) => {
         updatedProfile(formData);
       },
     });
+
+ 
   /*=====// formik and yup //=====*/
   return (
     <>
@@ -214,12 +218,15 @@ const ProfileContainer = ({ userInfo, id }) => {
           <div className="flex justify-between mt-5">
             <DeleteUserModal id={id} />
             <div className="w-9"></div>
+            <Link to='/signin'>
             <span
               onClick={handleSignOut}
               className="text-red-700 cursor-pointer"
             >
               Sign out
             </span>
+            </Link>
+          
           </div>
         </form>
       </div>

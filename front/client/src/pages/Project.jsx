@@ -10,6 +10,7 @@ const Project = () => {
   const dispatch = useDispatch();
   const { isActive, loading } = useSelector((state) => state.project);
   
+  const user = useSelector((state) => state?.user?.user);
 
   const createproject = () => {
     dispatch(createProject(values));

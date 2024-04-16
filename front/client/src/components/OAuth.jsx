@@ -26,12 +26,12 @@ export default function OAuth() {
       console.log(data);
 
       // Check if the current location is the /signin route
-      if (location.pathname === "/signin") {
-        // Redirect to the /account route
-        navigate("/account");
-      } else {
-        navigate("/account", { state: { from: "/signup" } });
-      }
+      // if (location.pathname === "/signin") {
+      //   // Redirect to the /account route
+      //   navigate("/signin");
+      // } else {
+      //   navigate("/account", { state: { from: "/signup" } });
+      // }
     } catch (error) {
       console.log("could not login with google", error);
     }

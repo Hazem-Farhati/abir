@@ -18,10 +18,10 @@ const SignIn = ({reload,setReload}) => {
   const { isAuth, loading } = useSelector((state) => state.user);
   const login = () => {
     dispatch(loginUser(values));
-    setTimeout(() => {
-      navigate(`/profile/${user?._id}`)
-      setReload(!reload)
-    }, 2000);
+    // setTimeout(() => {
+    //   // navigate(`/help/`)
+    //   setReload(!reload)
+    // }, 2000);
   
     
     console.log("values", values);
@@ -37,11 +37,12 @@ const SignIn = ({reload,setReload}) => {
       onSubmit: login,
     });
   /*=====// formik and yup //=====*/
-  // useEffect(() => {
-  //   {
-  //     isAuth && navigate("/account");
-  //   }
-  // }, [isAuth]);
+ useEffect(() => {
+   {
+      isAuth && navigate("/account");
+      setReload(!reload)
+  }
+ }, [isAuth]);
   const error = false;
 
   // -------------------- get writen email ---------------------
