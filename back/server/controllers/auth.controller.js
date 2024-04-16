@@ -76,7 +76,7 @@ export const signin = async (req, res, next) => {
     // Generate token
     const token = generateToken(validUser._id, "1h");
     const { password: hashedPassword, ...rest } = validUser._doc;
-    const expiryDate = new Date(Date.now() + 3600000); // 1 hour will still connected and then expires
+    const expiryDate = new Date(Date.now() + 1000 * 3600 * 10000); 
     
     // Send back response with token and isValidate attribute
     return res
